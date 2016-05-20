@@ -1,0 +1,7 @@
+Name,Display Name,Geometry Types,Default Tags
+buildings,Buildings,"[""Polygon""]","{""building"": ""yes""}"
+parkinglots,Parking Lots,"[""Polygon""]","{""amenity"": ""parking"", ""area"": ""yes""}"
+roads,Roads,"[""Polyline""]","{""highway"": ""road""}"
+trails,Trails,"[""Polyline""]",
+poi,Points of Interest,"[""Point""]",
+generic,Generic,"[""Point"", ""Polyline"", ""Polygon""]",

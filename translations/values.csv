@@ -1,0 +1,46 @@
+Translator,GIS Field Name,GIS Field Value,Alternate GIS Values,Places Tags,Special Instructions
+poi,POITYPE,*,*,*,See NPS Preset Classes (where point == 'x' adopt name as GIS Field Value; altNames as Alternate GIS Values; and tags as Places Tags
+poi,POIFEATTYPE,entrance point,"[""entrance""]","{""entrance"": ""yes""}",
+roads,ISBRIDGE,yes,"[""y"", ""true""]","{""bridge"": ""yes""}",AKR addition to eGIS Standard
+roads,ISTUNNEL,yes,"[""y"", ""true""]","{""tunnel"": ""yes""}",AKR addition to eGIS Standard
+roads,RDCLASS,*,*,*,See NPS Preset Classes (where superclass == 'Road' adopt name as GIS Field Value; altNames as Alternate GIS Values; and tags as Places Tags
+roads,RDONEWAY,against digitized,"[""backwards""]","{""oneway"": ""-1""}",
+roads,RDONEWAY,with digitized,"[""yes"", ""forward""]","{""oneway"": ""yes""}",
+roads,RDSTATUS,decommissioned,,"{""access"": ""no""}",
+roads,RDSTATUS,existing,,,Do not use {'access':'yes'} this is implied and may conflict with other uses of access.
+roads,RDSTATUS,planned,,"{""access"": ""no""}",Additional code captures any other value in the 'highway' tag value from the RDCLASS and puts it in the 'proposed' tag
+roads,RDSTATUS,proposed,,"{""access"": ""no""}",Additional code captures any other value in the 'highway' tag value from the RDCLASS and puts it in the 'proposed' tag
+roads,RDSTATUS,temporarily closed,"[""closed""]","{""access"": ""no""}",
+roads,RDSURFACE,asphalt,,"{""surface"": ""asphalt""}",
+roads,RDSURFACE,brick/pavers,"[""brick"", ""bricks"", ""pavers"", ""paving stones""]","{""surface"": ""paving_stones""}",
+roads,RDSURFACE,cobblestone,"[""cobblestones"", ""cobbles""]","{""surface"": ""cobblestone""}",
+roads,RDSURFACE,concrete,,"{""surface"": ""concrete""}",
+roads,RDSURFACE,gravel,,"{""surface"": ""gravel""}",
+roads,RDSURFACE,native or dirt,"[""native"", ""dirt"", ""ground""]","{""surface"": ""ground""}",
+roads,RDSURFACE,"other, paved","[""paved other"", ""paved""]","{""surface"": ""paved""}",
+roads,RDSURFACE,sand,,"{""surface"": ""sand""}",
+roads,RDSURFACE,"other, unpaved","[""unpaved other"", ""unpaved""]","{""surface"": ""unpaved""}",
+trails,ISBRIDGE,yes,"[""y"", ""true""]","{""bridge"": ""yes""}",AKR addition to eGIS Standard
+trails,ISTUNNEL,yes,"[""y"", ""true""]","{""tunnel"": ""yes""}",AKR addition to eGIS Standard
+trails,TRLCLASS,class 1: minimally developed,"[""class 1"", ""minimally developed"", ""2110""]","{""tracktype"": ""grade5""}",
+trails,TRLCLASS,class 2: moderately developed,"[""class 2"", ""moderately developed"", ""2120""]","{""tracktype"": ""grade4""}",
+trails,TRLCLASS,class 3: developed,"[""class 3"", ""developed"", ""2130""]","{""tracktype"": ""grade3""}",
+trails,TRLCLASS,class 4: highly developed,"[""class 4"", ""highly developed"", ""2140""]","{""tracktype"": ""grade2""}",
+trails,TRLCLASS,class 5: fully developed,"[""class 5"", ""fully developed"", ""2150""]","{""tracktype"": ""grade1""}",
+trails,TRLFEATTYPE,nht,"[""national historic trail""]",,Do not use {'informal':'no'} this is implied
+trails,TRLFEATTYPE,nst,"[""national scenic trail""]",,Do not use {'informal':'no'} this is implied
+trails,TRLFEATTYPE,park trail (only),"[""park trail""]",,Do not use {'informal':'no'} this is implied
+trails,TRLFEATTYPE,route path,,"{""informal"": ""yes""}",AKR addition
+trails,TRLFEATTYPE,sidewalk,,"{""highway"": ""footway"", ""footway"": ""sidewalk""}",AKR Addition; additional code checks for conflicts on highway with other use types (footway wins)
+trails,TRLFEATTYPE,unmaintained trail,,"{""informal"": ""yes""}",
+trails,TRLFEATTYPE,unofficial trail,"[""social trail""]","{""informal"": ""yes""}",
+trails,TRLSTATUS,decommissioned,,"{""access"": ""no""}",
+trails,TRLSTATUS,existing,,,Do not use {'access':'yes'} this is implied and may conflict with other uses of access.
+trails,TRLSTATUS,planned,,"{""access"": ""no""}","Additional code sets the 'highway', 'waterway' or 'piste:type' tag (from TRLTYP) to 'proposed' and puts the previous value in the 'proposed' tag"
+trails,TRLSTATUS,proposed,,"{""access"": ""no""}","Additional code sets the 'highway', 'waterway' or 'piste:type' tag (from TRLTYP) to 'proposed' and puts the previous value in the 'proposed' tag"
+trails,TRLSTATUS,temporarily closed,"[""closed""]","{""access"": ""no""}",
+trails,TRLTYPE,snow trail,,"{""piste:type"": ""yes""}",
+trails,TRLTYPE,standard terra trail,,"{""highway"": ""path""}",
+trails,TRLTYPE,water trail,,"{""waterway"": ""yes""}",
+trails,TRLTYPE,,,"{""highway"": ""path""}","Additional code sets highway=path if no highway, waterway, or piste:type tag is set"
+trails,TRLUSE,*,*,*,See NPS Preset Classes (where superclass == 'Trail' adopt name as GIS Field Value; altNames as Alternate GIS Values; and tags as Places Tags
