@@ -39,6 +39,5 @@ module.exports = function (database, sourceConfig, tableName) {
     'task': database.queryList,
     'params': ['{{sqlStatements.insert}}', '{{sourceData}}']
   }];
-  console.log('loading', sourceConfig);
-  return tools.iterateTasks(tasks, 'sourceToTable', true);
+  return tools.iterateTasks(tasks, 'sourceToTable', false);
 };
