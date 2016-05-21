@@ -1,0 +1,37 @@
+[{
+  "name": "Translators",
+  "connection": {
+    "filePath": "./translations/datatypes.csv",
+    "type": "csv"
+  },
+  "fields": {
+    "primaryKey": ["Name"]
+  }
+}, {
+  "name": "Field Mapping",
+  "connection": {
+    "filePath": "./translations/fields.csv",
+    "type": "csv"
+  },
+  "fields": {
+    "primaryKey": ["Translator", "GIS Field Name"]
+  }
+}, {
+  "name": "Value Mapping",
+  "connection": {
+    "filePath": "./translations/values.csv",
+    "type": "csv"
+  },
+  "fields": {
+    "primaryKey": ["Translator", "GIS Field Name", "GIS Field Value"]
+  }
+}, {
+  "name": "Preset_Classes",
+  "connection": {
+    "filePath": "./translations/presets.csv",
+    "type": "csv"
+  },
+  "fields": {
+    "primaryKey": ["superclass", "class", "type", "point", "line", "polygon"]
+  }
+}]
