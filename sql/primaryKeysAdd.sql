@@ -2,11 +2,9 @@ INSERT INTO "tagged_values" (
   "id",
   "translator",
   "geometry_types",
-  "value_mapping",
-  "field_mapping"
+  "value_mapping"
 ) SELECT
-  "GlobalID",
-  null,
+  '{{primaryKey}}',
   null,
   null,
   null
