@@ -25,6 +25,6 @@ SET "value_mapping" = (
           "rank" IS NOT NULL ORDER BY "rank" LIMIT 1
     ) AS "best_match") as "tags"
     FROM "Input Data"
-    WHERE "Input Data"."GlobalID" = "tagged_values"."id"
+    WHERE "Input Data"."{{primaryKey}}" = "tagged_values"."id"
 )
 WHERE "value_mapping" IS NULL;
