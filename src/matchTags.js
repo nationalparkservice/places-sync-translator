@@ -16,8 +16,7 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'translationsGet': path.join(__dirname, '..', 'sql', 'translationsGet.sql'),
     'valuesFieldGet': path.join(__dirname, '..', 'sql', 'valuesFieldGet.sql'),
     'valueTagGet': path.join(__dirname, '..', 'sql', 'valueTagGet.sql'),
-    'fieldFieldsGet': path.join(__dirname, '..', 'sql', 'fieldFieldsGet.sql'),
-    'fieldTagsGet': path.join(__dirname, '..', 'sql', 'fieldTagsGet.sql')
+    'fieldFieldsGet': path.join(__dirname, '..', 'sql', 'fieldFieldsGet.sql')
   };
 
   var tasks = [{
@@ -33,8 +32,12 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
   }, {
     'name': 'addKeys',
     'description': 'add the primary keys to the tagging table',
-    'task': tagDatabase.query,
-    'params': '{{loadedSqlFiles.primaryKeysAdd}}'
+    'task': doubleReplace,
+    'params': ['{{loadedSqlFiles.primaryKeysAdd}}', {
+      'primaryKey': primaryKey
+    },
+      null, tagDatabase.query
+    ]
   }, {
     'name': 'addTranslatorInfo',
     'description': 'Add the translator fields',
@@ -50,10 +53,19 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
       'translator': translationType
     }]
   }, {
+    'name': 'modifiedValueMappedField',
+    'description': 'Add the primaryKey value to the getValueMappedField object',
+    'task': function (arr, pk) {
+      var obj = arr[0] || {};
+      obj.primaryKey = pk;
+      return obj;
+    },
+    'params': ['{{getValueMappedField}}', primaryKey]
+  }, {
     'name': 'mapValues',
     'description': 'Map the values from the getValueMappedField to the presets',
     'task': doubleReplace,
-    'params': ['{{loadedSqlFiles.valueTagGet}}', '{{getValueMappedField.0}}', null, tagDatabase.query]
+    'params': ['{{loadedSqlFiles.valueTagGet}}', '{{modifiedValueMappedField}}', null, tagDatabase.query]
   }, {
     'name': 'mappedFieldInfo',
     'description': 'Get the information for all the mapped fields',
