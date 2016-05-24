@@ -36,6 +36,7 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'description': 'add the primary keys to the tagging table',
     'task': doubleReplace,
     'params': ['{{loadedSqlFiles.insertPrimaryKeys}}', {
+      'sourceName': getjsonSource.name,
       'primaryKey': primaryKey
     },
       null, tagDatabase.query
@@ -59,11 +60,13 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'description': 'Add the primaryKey value to the getValueMappedField object',
     'task': function (arr, pk) {
       var obj = arr[0] || {};
+      console.log(obj, arr);
       obj.primaryKey = pk;
+      obj.sourceName = getjsonSource.name;
       return obj;
     },
     'params': ['{{getValueMappedField}}', primaryKey]
-  },{
+  }, {
     'name': 'mapValues',
     'description': 'Map the values from the getValueMappedField to the presets',
     'task': doubleReplace,
@@ -101,7 +104,7 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'name': 'buildMappedValuesSql',
     'description': 'Creates a SQL statement to get the rest of the fields',
     'task': buildMappedValuesSql,
-    'params': [primaryKey, '{{inputDataColumns}}',  '{{mappedValueInfo}}', tableName]
+    'params': [primaryKey, '{{inputDataColumns}}', '{{mappedValueInfo}}', tableName]
   }, {
     'name': 'runValueQuery',
     'description': 'Runs the query from the last step',
