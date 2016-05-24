@@ -6,10 +6,10 @@ SET "preset_mapping" = (
       SELECT
         "Preset_Classes"."tags",
         CASE
-          WHEN "Preset_Classes"."type" =  "Input Data"."{{valueField}}" THEN 1 -- If the requested term equals the type, then rank it as 1
-          WHEN instr("Preset_Classes"."altNames", '"' ||   "Input Data"."{{valueField}}" || '"') THEN
-            length(substr("Preset_Classes"."altNames", 0, instr("Preset_Classes"."altNames", '"' ||   "Input Data"."{{valueField}}" || '"'))) - 
-            length(replace(substr("Preset_Classes"."altNames", 0, instr("Preset_Classes"."altNames", '"' ||   "Input Data"."{{valueField}}" || '"')), ',', '')) + 
+          WHEN "Preset_Classes"."type" =  "{{sourceName}}"."{{valueField}}" THEN 1 -- If the requested term equals the type, then rank it as 1
+          WHEN instr("Preset_Classes"."altNames", '"' ||   "{{sourceName}}"."{{valueField}}" || '"') THEN
+            length(substr("Preset_Classes"."altNames", 0, instr("Preset_Classes"."altNames", '"' ||   "{{sourceName}}"."{{valueField}}" || '"'))) - 
+            length(replace(substr("Preset_Classes"."altNames", 0, instr("Preset_Classes"."altNames", '"' ||   "{{sourceName}}"."{{valueField}}" || '"')), ',', '')) + 
             2
            ELSE null -- If it's in the altNames fields, then the rank is the position in that list plus 2
                     -- The first index in this list will be 0, but our ranks start at one
@@ -24,7 +24,7 @@ SET "preset_mapping" = (
           ) AND
           "rank" IS NOT NULL ORDER BY "rank" LIMIT 1
     ) AS "best_match") as "tags"
-    FROM "Input Data"
-    WHERE "Input Data"."{{primaryKey}}" = "tagged_values"."id"
+    FROM "{{sourceName}}"
+    WHERE "{{sourceName}}"."{{primaryKey}}" = "tagged_values"."id"
 )
 WHERE "preset_mapping" IS NULL;
