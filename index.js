@@ -12,6 +12,12 @@ var memoryMasterConfig = {
   'connection': ':memory:'
 };
 
+// Add the path to the csv files
+sources = sources.map(function (source) {
+  source.connection.filePath = __dirname + '/translations/' + source.connection.filePath;
+  return source;
+});
+
 module.exports = function (geojsonSource, translationType) {
   var tasks = [{
     'name': 'masterDatabase',
