@@ -1,4 +1,5 @@
-var buildMappedFieldsSQL = require('./buildMappedFieldsSQL');
+var buildMappedFieldsSql = require('./buildMappedFieldsSql');
+var buildMappedValuesSql = require('./buildMappedValuesSql');
 var doubleReplace = require('./doubleReplace');
 var loadFiles = require('./loadFiles');
 var matchColumns = require('./matchColumns');
@@ -10,13 +11,14 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
   var primaryKey = tools.arrayify(getjsonSource.fields.primaryKey)[0];
   var tableName = getjsonSource.name;
 
-  var sqlFiles = {
-    'taggedValuesCreate': path.join(__dirname, '..', 'sql', 'taggedValuesCreate.sql'),
-    'primaryKeysAdd': path.join(__dirname, '..', 'sql', 'primaryKeysAdd.sql'),
-    'translationsGet': path.join(__dirname, '..', 'sql', 'translationsGet.sql'),
-    'valuesFieldGet': path.join(__dirname, '..', 'sql', 'valuesFieldGet.sql'),
-    'valueTagGet': path.join(__dirname, '..', 'sql', 'valueTagGet.sql'),
-    'fieldFieldsGet': path.join(__dirname, '..', 'sql', 'fieldFieldsGet.sql')
+  var sqlFiles = { // TODO: These need more descriptive names!
+    'createTempTagTable': path.join(__dirname, '..', 'sql', 'createTempTagTable.sql'),
+    'insertPrimaryKeys': path.join(__dirname, '..', 'sql', 'insertPrimaryKeys.sql'),
+    'addTranslatorSettings': path.join(__dirname, '..', 'sql', 'addTranslatorSettings.sql'),
+    'getPresetFields': path.join(__dirname, '..', 'sql', 'getPresetFields.sql'),
+    'getTranslatedValues': path.join(__dirname, '..', 'sql', 'getTranslatedValues.sql'),
+    'addPresetSettings': path.join(__dirname, '..', 'sql', 'addPresetSettings.sql'),
+    'getMappedFields': path.join(__dirname, '..', 'sql', 'getMappedFields.sql')
   };
 
   var tasks = [{
@@ -28,12 +30,12 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'name': 'createTaggingTable',
     'description': 'Created the table where the tagging values will go',
     'task': tagDatabase.query,
-    'params': '{{loadedSqlFiles.taggedValuesCreate}}'
+    'params': '{{loadedSqlFiles.createTempTagTable}}'
   }, {
     'name': 'addKeys',
     'description': 'add the primary keys to the tagging table',
     'task': doubleReplace,
-    'params': ['{{loadedSqlFiles.primaryKeysAdd}}', {
+    'params': ['{{loadedSqlFiles.insertPrimaryKeys}}', {
       'primaryKey': primaryKey
     },
       null, tagDatabase.query
@@ -42,14 +44,14 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'name': 'addTranslatorInfo',
     'description': 'Add the translator fields',
     'task': tagDatabase.query,
-    'params': ['{{loadedSqlFiles.translationsGet}}', {
+    'params': ['{{loadedSqlFiles.addTranslatorSettings}}', {
       'translator': translationType
     }]
   }, {
     'name': 'getValueMappedField',
     'description': 'Determines which field is used for preset mapping',
     'task': tagDatabase.query,
-    'params': ['{{loadedSqlFiles.valuesFieldGet}}', {
+    'params': ['{{loadedSqlFiles.getPresetFields}}', {
       'translator': translationType
     }]
   }, {
@@ -61,16 +63,23 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
       return obj;
     },
     'params': ['{{getValueMappedField}}', primaryKey]
-  }, {
+  },{
     'name': 'mapValues',
     'description': 'Map the values from the getValueMappedField to the presets',
     'task': doubleReplace,
-    'params': ['{{loadedSqlFiles.valueTagGet}}', '{{modifiedValueMappedField}}', null, tagDatabase.query]
+    'params': ['{{loadedSqlFiles.addPresetSettings}}', '{{modifiedValueMappedField}}', null, tagDatabase.query]
+  }, {
+    'name': 'mappedValueInfo',
+    'description': 'Get the information for all the mapped values',
+    'task': tagDatabase.query,
+    'params': ['{{loadedSqlFiles.getTranslatedValues}}', {
+      'translator': translationType
+    }]
   }, {
     'name': 'mappedFieldInfo',
     'description': 'Get the information for all the mapped fields',
     'task': tagDatabase.query,
-    'params': ['{{loadedSqlFiles.fieldFieldsGet}}', {
+    'params': ['{{loadedSqlFiles.getMappedFields}}', {
       'translator': translationType
     }]
   }, {
@@ -79,30 +88,40 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'task': tagDatabase.query,
     'params': ['PRAGMA table_info("' + tableName + '");']
   }, {
-    'name': 'matchColumns',
+    'name': 'matchFieldColumns',
     'description': 'Matches the columns in the Input Data table with the mapped ones',
     'task': matchColumns,
     'params': ['{{inputDataColumns}}', '{{mappedFieldInfo}}']
   }, {
-    'name': 'buildMappedFieldsSQL',
+    'name': 'buildMappedFieldsSql',
     'description': 'Creates a SQL statement to get the rest of the fields',
-    'task': buildMappedFieldsSQL,
-    'params': [primaryKey, '{{matchColumns}}', tableName]
+    'task': buildMappedFieldsSql,
+    'params': [primaryKey, '{{matchFieldColumns}}', tableName]
+  }, {
+    'name': 'buildMappedValuesSql',
+    'description': 'Creates a SQL statement to get the rest of the fields',
+    'task': buildMappedValuesSql,
+    'params': [primaryKey, '{{inputDataColumns}}',  '{{mappedValueInfo}}', tableName]
+  }, {
+    'name': 'runValueQuery',
+    'description': 'Runs the query from the last step',
+    'task': tagDatabase.query,
+    'params': ['{{buildMappedValuesSql}}']
   }, {
     'name': 'runFieldQuery',
     'description': 'Runs the query from the last step',
     'task': tagDatabase.query,
-    'params': '{{buildMappedFieldsSQL}}'
+    'params': ['{{buildMappedFieldsSql}}']
   }, {
     'name': 'returnTranslations',
     'description': 'Selects the full list from the tagged_values table',
     'task': tagDatabase.query,
-    'params': 'SELECT * FROM "tagged_values";'
+    'params': ['SELECT * FROM "tagged_values";']
   }, {
     'name': 'finalMappings',
     'description': 'Create the final tag mappings',
     'task': mergeMappings,
-    'params': [primaryKey, '{{runFieldQuery}}', '{{returnTranslations}}']
+    'params': [primaryKey, '{{runValueQuery}}', '{{runFieldQuery}}', '{{returnTranslations}}']
   }];
-  return tools.iterateTasks(tasks, 'matchTags', false);
+  return tools.iterateTasks(tasks, 'matchTags', true);
 };
