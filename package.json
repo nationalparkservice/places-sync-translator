@@ -10,9 +10,7 @@
     "bluebird": "3.4.0",
     "csv": "1.1.0",
     "jm-tools": "git+https://github.com/jimmyrocks/jm-tools",
-    "fandlebars": "git+https://github.com/jimmyrocks/fandlebars",
-    "places-sync-databases": "git+https://github.com/nationalparkservice/places-sync-databases",
-    "places-sync-sources": "git+https://github.com/nationalparkservice/places-sync-sources"
+    "fandlebars": "git+https://github.com/jimmyrocks/fandlebars"
   },
   "description": "A node app that synchronizes data from multiple sources to the Places database.",
   "keywords": ["nps", "postgres", "cartodb"],
