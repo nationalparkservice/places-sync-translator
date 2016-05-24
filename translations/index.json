@@ -1,7 +1,7 @@
 [{
   "name": "Translators",
   "connection": {
-    "filePath": "./translations/datatypes.csv",
+    "filePath": "datatypes.csv",
     "type": "csv"
   },
   "fields": {
@@ -10,7 +10,7 @@
 }, {
   "name": "Field Mapping",
   "connection": {
-    "filePath": "./translations/fields.csv",
+    "filePath": "fields.csv",
     "type": "csv"
   },
   "fields": {
@@ -19,7 +19,7 @@
 }, {
   "name": "Value Mapping",
   "connection": {
-    "filePath": "./translations/values.csv",
+    "filePath": "values.csv",
     "type": "csv"
   },
   "fields": {
@@ -28,7 +28,7 @@
 }, {
   "name": "Preset_Classes",
   "connection": {
-    "filePath": "./translations/presets.csv",
+    "filePath": "presets.csv",
     "type": "csv"
   },
   "fields": {
