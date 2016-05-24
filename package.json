@@ -1,22 +1,30 @@
 {
-  "contributors": [{
-    "name": "Jim McAndrew",
-    "email": "james_mcandrew@partner.nps.gov"
-  }, {
-    "name": "Nate Irwin",
-    "email": "nate_irwin@nps.gov"
-  }],
+  "contributors": [
+    {
+      "name": "Jim McAndrew",
+      "email": "james_mcandrew@partner.nps.gov"
+    },
+    {
+      "name": "Nate Irwin",
+      "email": "nate_irwin@nps.gov"
+    }
+  ],
   "dependencies": {
     "bluebird": "3.4.0",
     "csv": "1.1.0",
     "jm-tools": "git+https://github.com/jimmyrocks/jm-tools",
-    "fandlebars": "git+https://github.com/jimmyrocks/fandlebars",
-    "places-sync-databases": "git+https://github.com/nationalparkservice/places-sync-databases",
-    "places-sync-sources": "git+https://github.com/nationalparkservice/places-sync-sources"
+    "fandlebars": "git+https://github.com/jimmyrocks/fandlebars"
   },
   "description": "A node app that synchronizes data from multiple sources to the Places database.",
-  "keywords": ["nps", "postgres", "cartodb"],
-  "author": "Jim McAndrew <james_mcandrew@partner.nps.gov>",
+  "keywords": [
+    "nps",
+    "postgres",
+    "cartodb"
+  ],
+  "author": {
+    "name": "Jim McAndrew",
+    "email": "james_mcandrew@partner.nps.gov"
+  },
   "license": "Public Domain",
   "main": "index.js",
   "name": "places-sync-translator",
@@ -28,5 +36,15 @@
     "start": "node index",
     "test": " make && node test"
   },
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "readme": "#places-sync-osm-translator\n\nThe name is quite a mouthful! This project uses four (4) translation files to match tags to what we would expect them to be in places\n\n#### For consistency, this project also includes the SQL code for converting from tags to our Superclass, Class, Type format\n\n## Process\n1. First we open a database to add all of those translations\n\n2. Add each translation file to a memory database *(propose to have these added to cartodb)*\n  1. Translators (https://docs.google.com/spreadsheets/d/1V8DsAeBipMrll2rmjjTZ6fYTE8g69dI9k6V762K4PYA/edit#gid=2039898153)\n  2. Field Mapping (https://docs.google.com/spreadsheets/d/1V8DsAeBipMrll2rmjjTZ6fYTE8g69dI9k6V762K4PYA/edit#gid=2039898153)\n  3. Value Mapping (https://docs.google.com/spreadsheets/d/1V8DsAeBipMrll2rmjjTZ6fYTE8g69dI9k6V762K4PYA/edit#gid=2039898153)\n  4. Preset_Classes (https://docs.google.com/spreadsheets/d/1XFqkmIYMEp73q9flgNto9QJim6N5hbacgkUAgdf0rhE/edit#gid=0)\n\n3. Add the geojson file into SQLite\n\n4. Find the field that maps to Preset Classes in the value mapping document\n  1. SELECT \"GIS Field Name\" FROM value_mapping WHERE \"GIS Field Value\" = '*' AND \"Translator\" = {{translationType}};\n\n5. Create a table to keep track of the tags\n  1. CREATE TABLE taggging (id, tagset, priority);\n\n6. Get the default tags for this datatype (if any)\n  1. INSERT INTO TABLE id, tagset, 1\n  2. SELECT \"Default Tags\" from \"Translators\" WHERE \"Translator\" = {{translationType}};\n\n7. Look through preset classes to determine what the best preset is\n  1. INSERT INTO TABLE id, tagset, 2\n  2. SELECT name, (SELECT a FROM (SELECT a, CASE WHEN a = tags.name THEN 1 WHEN instr(b, '\"' || tags.name || '\"') then length(substr(b, 0, instr(b, '\"' || tags.name || '\"'))) - length(replace(substr(b, 0, instr(b, '\"' || tags.name || '\"')), ',', '')) + 2 ELSE null END as rank from tmp where rank is not null order by rank limit 1)) AS preset FROM tags;\n\n8. Go through the value mappings and match them up\n  1. CREATE TABLE values AS SELECT \"Global Id\" as id,\n\n9. Go through the field mappings and match them up\n  1. CREATE TABLE values AS SELECT \"Global Id\" as id', '{\"' || \"Places Tag Name\" || '\": \"' || value || '\"}';\n\n10. For each object in the GeoJSON, match the tags that are associated\n  1. merge the tag objects with the matches, in the order of their priority\n\n11. Return the GeoJSON with updated dataPlaces-sync-osm-translator\n\nThe name is quite a mouthful! This project uses four (4) translation files to match tags to what we would expect them to be in places\n\n### For consistency, this project also *will include* the SQL code for converting from tags to our Superclass, Class, Type format\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/nationalparkservice/places-sync-translator/issues"
+  },
+  "homepage": "https://github.com/nationalparkservice/places-sync-translator",
+  "_id": "places-sync-translator@0.0.1",
+  "_shasum": "0b4d1f4b40dafe26fbfe66ae981d6415ca7639fd",
+  "_resolved": "git+https://github.com/nationalparkservice/places-sync-translator#c2498aa5b0bdc7cf57fde9f43865b8135ed161bf",
+  "_from": "places-sync-translator@git+https://github.com/nationalparkservice/places-sync-translator"
 }
