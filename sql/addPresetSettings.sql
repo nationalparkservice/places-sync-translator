@@ -1,5 +1,5 @@
 UPDATE "tagged_values"
-SET "value_mapping" = (
+SET "preset_mapping" = (
   SELECT (
     SELECT "best_match"."tags"
     FROM (
@@ -27,4 +27,4 @@ SET "value_mapping" = (
     FROM "Input Data"
     WHERE "Input Data"."{{primaryKey}}" = "tagged_values"."id"
 )
-WHERE "value_mapping" IS NULL;
+WHERE "preset_mapping" IS NULL;
