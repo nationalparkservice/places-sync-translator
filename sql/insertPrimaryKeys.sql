@@ -2,7 +2,7 @@ INSERT INTO "tagged_values" (
   "id",
   "translator",
   "geometry_types",
-  "value_mapping"
+  "preset_mapping"
 ) SELECT
   '{{primaryKey}}',
   null,
