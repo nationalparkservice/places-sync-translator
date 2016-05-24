@@ -17,6 +17,5 @@ module.exports = function (sourceObj, ignoreColumns) {
       returnColumns[key] = thisValue[key];
     }
   }
-  console.log(returnColumns);
   return returnColumns;
 };
