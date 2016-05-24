@@ -8,4 +8,4 @@ INSERT INTO "tagged_values" (
   null,
   null,
   null
-FROM "Input Data";
+FROM "{{sourceName}}";
