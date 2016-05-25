@@ -4,7 +4,7 @@ INSERT INTO "tagged_values" (
   "geometry_types",
   "preset_mapping"
 ) SELECT
-  '{{primaryKey}}',
+  "{{primaryKey}}",
   null,
   null,
   null
