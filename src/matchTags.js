@@ -25,12 +25,12 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'name': 'loadedSqlFiles',
     'description': 'loads the SQL files into memory so we can run them against sqlite',
     'task': loadFiles,
-    'params': sqlFiles
+    'params': [sqlFiles]
   }, {
     'name': 'createTaggingTable',
     'description': 'Created the table where the tagging values will go',
     'task': tagDatabase.query,
-    'params': '{{loadedSqlFiles.createTempTagTable}}'
+    'params': ['{{loadedSqlFiles.createTempTagTable}}']
   }, {
     'name': 'addKeys',
     'description': 'add the primary keys to the tagging table',
@@ -60,7 +60,6 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'description': 'Add the primaryKey value to the getValueMappedField object',
     'task': function (arr, pk) {
       var obj = arr[0] || {};
-      console.log(obj, arr);
       obj.primaryKey = pk;
       obj.sourceName = getjsonSource.name;
       return obj;
@@ -126,5 +125,5 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'task': mergeMappings,
     'params': [primaryKey, '{{runValueQuery}}', '{{runFieldQuery}}', '{{returnTranslations}}']
   }];
-  return tools.iterateTasks(tasks, 'matchTags', true);
+  return tools.iterateTasks(tasks, 'matchTags', false);
 };
