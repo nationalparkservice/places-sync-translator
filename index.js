@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var databases = require('places-sync-databases');
 var loadTables = require('./src/loadTables');
 var matchTags = require('./src/matchTags');
+var path = require('path');
 var removeNulls = require('./src/removeNulls');
 var sources = require('./translations');
 var toGeojson = require('./src/toGeojson');
@@ -14,7 +15,7 @@ var memoryMasterConfig = {
 
 // Add the path to the csv files
 sources = sources.map(function (source) {
-  source.connection.filePath = __dirname + '/translations/' + source.connection.filePath;
+  source.connection.filePath = path.join(__dirname, 'translations', source.connection.filePath);
   return source;
 });
 
