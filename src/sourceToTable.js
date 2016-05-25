@@ -11,7 +11,7 @@ module.exports = function (database, sourceConfig, tableName) {
   }, {
     'name': 'sourceData',
     'description': 'Pull the data from the source new',
-    'task': '{{source.cache.selectAll}}',
+    'task': '{{source.get.all}}',
     'params': []
   }, {
     'name': 'sourceColumns',
