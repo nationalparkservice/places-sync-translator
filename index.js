@@ -19,7 +19,7 @@ sources = sources.map(function (source) {
   return source;
 });
 
-module.exports = function (geojsonSource, translationType) {
+module.exports = function (geojsonSource) {
   var tasks = [{
     'name': 'masterDatabase',
     'description': 'Create a new database in memory',
@@ -39,7 +39,7 @@ module.exports = function (geojsonSource, translationType) {
     'name': 'matchTags',
     'description': 'Matches the tags',
     'task': matchTags,
-    'params': ['{{masterDatabase}}', translationType, geojsonSource]
+    'params': ['{{masterDatabase}}', geojsonSource]
   }, {
     'name': 'finalMappings',
     'description': 'Matches the tags',
