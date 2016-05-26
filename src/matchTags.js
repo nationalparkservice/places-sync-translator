@@ -7,9 +7,10 @@ var mergeMappings = require('./mergeMappings');
 var path = require('path');
 var tools = require('jm-tools');
 
-module.exports = function (tagDatabase, translationType, getjsonSource) {
+module.exports = function (tagDatabase, getjsonSource) {
   var primaryKey = tools.arrayify(getjsonSource.fields.primaryKey)[0];
   var tableName = getjsonSource.name;
+  var translationType = getjsonSource.connection.translationType || 'generic';
 
   var sqlFiles = { // TODO: These need more descriptive names!
     'createTempTagTable': path.join(__dirname, '..', 'sql', 'createTempTagTable.sql'),
@@ -36,7 +37,7 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
     'description': 'add the primary keys to the tagging table',
     'task': doubleReplace,
     'params': ['{{loadedSqlFiles.insertPrimaryKeys}}', {
-      'sourceName': getjsonSource.name,
+      'sourceName': tableName,
       'primaryKey': primaryKey
     },
       null, tagDatabase.query
@@ -49,27 +50,33 @@ module.exports = function (tagDatabase, translationType, getjsonSource) {
       'translator': translationType
     }]
   }, {
-    'name': 'getValueMappedField',
+    'name': 'getPresetMappedField',
     'description': 'Determines which field is used for preset mapping',
     'task': tagDatabase.query,
     'params': ['{{loadedSqlFiles.getPresetFields}}', {
       'translator': translationType
     }]
   }, {
-    'name': 'modifiedValueMappedField',
-    'description': 'Add the primaryKey value to the getValueMappedField object',
+    'name': 'modifiedPresetMappedField',
+    'description': 'Add the primaryKey value to the getPresetMappedField object',
     'task': function (arr, pk) {
       var obj = arr[0] || {};
       obj.primaryKey = pk;
-      obj.sourceName = getjsonSource.name;
+      obj.sourceName = tableName;
       return obj;
     },
-    'params': ['{{getValueMappedField}}', primaryKey]
+    'params': ['{{getPresetMappedField}}', primaryKey]
   }, {
     'name': 'mapValues',
-    'description': 'Map the values from the getValueMappedField to the presets',
-    'task': doubleReplace,
-    'params': ['{{loadedSqlFiles.addPresetSettings}}', '{{modifiedValueMappedField}}', null, tagDatabase.query]
+    'description': 'Map the values from the getPresetMappedField to the presets',
+    'task': function (_, mappings) {
+      if (!mappings.valueField) {
+        return;
+      } else {
+        return doubleReplace.apply(this, arguments);
+      }
+    },
+    'params': ['{{loadedSqlFiles.addPresetSettings}}', '{{modifiedPresetMappedField}}', null, tagDatabase.query]
   }, {
     'name': 'mappedValueInfo',
     'description': 'Get the information for all the mapped values',
