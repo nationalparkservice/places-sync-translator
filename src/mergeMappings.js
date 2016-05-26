@@ -20,8 +20,13 @@ module.exports = function (id, valueMappings, fieldMappings, origMappings) {
   var finalMappings = fieldMappings.map(function (row) {
     var matchedObjs = tools.denullify(findOtherMapping(row[id], origMappings) || {});
     var matchedValueMapping = tools.denullify(findOtherMapping(row[id], valueMappings) || {});
-    var matchedCleanValues = extractTags(matchedValueMapping, 'id');
-    var merged = tools.mergeObjects(parseJson(matchedObjs.translator), parseJson(matchedObjs.preset_mapping), matchedCleanValues, tools.denullify(row));
+    var cleanedMatchedValueMapping = extractTags(matchedValueMapping, 'id');
+    var merged = tools.mergeObjects(
+      parseJson(matchedObjs.preset_mapping),
+      parseJson(matchedObjs.translator),
+      cleanedMatchedValueMapping,
+      tools.denullify(row)
+    );
     // Remove ids
     delete merged.id;
     delete merged[id];
