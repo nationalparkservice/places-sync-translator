@@ -13,19 +13,19 @@ module.exports = function (tableJson) {
 
 var createFeature = function (row) {
   row = JSON.parse(JSON.stringify(row));
-  var metadataColumn = 'id';
+  var metadataColumn = '_primary_key';
   var geometryColumn = 'geometry';
   var feature = {
     'type': 'Feature',
     'geometry': JSON.parse(row[geometryColumn]),
-    'osmId': undefined,
-    'osmVersion': undefined,
     'foreignKey': row[metadataColumn],
     'properties': {}
   };
   for (var property in row) {
     if (property !== metadataColumn && property !== geometryColumn) {
-      feature.properties[property] = row[property];
+      if (row[property].toString().trim().length > 0) {
+        feature.properties[property] = row[property];
+      }
     }
   }
   return feature;
