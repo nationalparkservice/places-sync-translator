@@ -28,7 +28,7 @@ module.exports = function (id, valueMappings, fieldMappings, origMappings) {
       tools.denullify(row)
     );
     // Remove ids
-    delete merged.id;
+    // delete merged.id; // We will remove this in the last step so we can use it in the metadata
     delete merged[id];
     return merged;
   });
