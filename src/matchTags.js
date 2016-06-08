@@ -7,10 +7,12 @@ var mergeMappings = require('./mergeMappings');
 var path = require('path');
 var tools = require('jm-tools');
 
-module.exports = function (tagDatabase, getjsonSource) {
-  var primaryKey = tools.arrayify(getjsonSource.fields.primaryKey)[0];
-  var tableName = getjsonSource.name;
-  var translationType = getjsonSource.connection.translationType || 'generic';
+module.exports = function (tagDatabase, sourceColumns, sourceConfig) {
+  var primaryKey = sourceColumns.filter(function (column) {
+    return column.primaryKey || column.primaryKey === 0;
+  })[0].name;
+  var tableName = sourceConfig.name;
+  var translationType = sourceConfig.connection.translationType || 'generic';
 
   var sqlFiles = { // TODO: These need more descriptive names!
     'createTempTagTable': path.join(__dirname, '..', 'sql', 'createTempTagTable.sql'),
@@ -60,6 +62,9 @@ module.exports = function (tagDatabase, getjsonSource) {
     'name': 'modifiedPresetMappedField',
     'description': 'Add the primaryKey value to the getPresetMappedField object',
     'task': function (arr, pk) {
+      arr = arr.filter(function (record) {
+        return tools.simplifyArray(sourceColumns).indexOf(record.valueField) > -1;
+      });
       var obj = arr[0] || {};
       obj.primaryKey = pk;
       obj.sourceName = tableName;
