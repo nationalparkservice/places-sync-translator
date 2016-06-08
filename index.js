@@ -39,7 +39,7 @@ module.exports = function (geojsonSource) {
     'name': 'matchTags',
     'description': 'Matches the tags',
     'task': matchTags,
-    'params': ['{{masterDatabase}}', geojsonSource]
+    'params': ['{{masterDatabase}}', '{{loadedGeojson.0.0.get.columns.0}}', geojsonSource]
   }, {
     'name': 'finalMappings',
     'description': 'Matches the tags',
