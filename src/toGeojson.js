@@ -24,7 +24,7 @@ var createFeature = function (row) {
   for (var property in row) {
     if (property !== metadataColumn && property !== geometryColumn) {
       if (row[property].toString().trim().length > 0) {
-        feature.properties[property] = row[property];
+        feature.properties[property] = row[property] === '*' ? 'yes' : row[property];
       }
     }
   }
