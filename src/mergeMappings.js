@@ -14,7 +14,7 @@ var parseJson = function (str) {
 module.exports = function (id, valueMappings, fieldMappings, origMappings) {
   var findOtherMapping = function (primaryKey, otherMappings) {
     return otherMappings.filter(function (row) {
-      return row.id.toString() === primaryKey.toString();
+      return row.id !== null && primaryKey !== null && row.id.toString() === primaryKey.toString();
     })[0];
   };
   var finalMappings = fieldMappings.map(function (row) {
