@@ -10,7 +10,7 @@
     }
   ],
   "dependencies": {
-    "bluebird": "3.4.1",
+    "bluebird": "3.4.3",
     "csv": "1.1.0",
     "jm-tools": "git+https://github.com/jimmyrocks/jm-tools",
     "fandlebars": "git+https://github.com/jimmyrocks/fandlebars"
